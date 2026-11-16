@@ -1,0 +1,2 @@
+UNIT_RHS_SCALE=False: kind=['f16'] exact=True 186 TFLOP/s
+UNIT_RHS_SCALE=True: kind=['mxf8f6f4'] exact=True 1075 TFLOP/s

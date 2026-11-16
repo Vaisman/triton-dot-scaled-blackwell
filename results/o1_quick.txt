@@ -1,0 +1,57 @@
+device NVIDIA B300 SXM6 PC cap (10, 3)
+torch 2.8.0+cu128 cuda 12.8
+triton 3.9.0 at ~/triton-o1/python/triton/__init__.py
+triton checkout ~/triton-o1 commit ecd97a63d120a6a5862dd0002a5544e8bb392a3b dirty=no
+nvidia-smi NVIDIA B300 SXM6 PC, 580.173.02, 2032 MHz, 3996 MHz
+ptxas ~/triton-o1/python/triton/backends/nvidia/bin/ptxas: ['Build cuda_13.5.r13.5/compiler.39125733_0']
+cuobjdump ~/triton-o1/python/triton/backends/nvidia/bin/cuobjdump
+modes ['lhsonly', 'lhs+const', 'lhsvar', 'lhsvar+const', 'rhsvar', 'rhsvar+const'] shapes [(8192, 8192, 8192)] repeats 3
+
+=== M=8192 N=8192 K=8192
+  lhsonly      cfg=128x128x128 w4 s3:    185.6 TFLOP/s (min 185.6 max 185.6)  exact=True  mma=f16  regs=222 spills=0
+  lhsonly      cfg=128x128x128 w8 s3:    185.0 TFLOP/s (min 185.0 max 185.0)  exact=True  mma=f16  regs=123 spills=0
+  lhsonly      cfg=128x256x128 w8 s3:    209.4 TFLOP/s (min 209.4 max 209.5)  exact=True  mma=f16  regs=230 spills=0
+  lhsonly      cfg=128x128x64 w4 s4:    363.6 TFLOP/s (min 363.5 max 363.7)  exact=True  mma=f16  regs=230 spills=0
+  BEST lhsonly     :    363.6 TFLOP/s cfg=(128, 128, 64, 4, 4) mma=f16
+  SASS lhsonly     : UTCHMMA=8 UTCQMMA=0 UTCOMMA=0 F2FP=128 STS=50 LDS=52 LDG=4 PRMT=68 LDSM=34 UTMALDG=0
+  RANDOM lhsonly     : allclose=True max_abs=1.602e-01 max_rel_to_max=7.405e-06
+  lhs+const    cfg=128x128x128 w4 s3:   1075.6 TFLOP/s (min 1074.6 max 1075.9)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  lhs+const    cfg=128x128x128 w8 s3:   1028.3 TFLOP/s (min 1028.0 max 1028.8)  exact=True  mma=mxf8f6f4  regs=124 spills=0
+  lhs+const    cfg=128x256x128 w8 s3:   1213.3 TFLOP/s (min 1212.6 max 1213.7)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  lhs+const    cfg=128x128x64 w4 s4:    723.7 TFLOP/s (min 723.6 max 723.7)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  BEST lhs+const   :   1213.3 TFLOP/s cfg=(128, 256, 128, 8, 3) mma=mxf8f6f4
+  SASS lhs+const   : UTCHMMA=0 UTCQMMA=4 UTCOMMA=0 F2FP=0 STS=36 LDS=16 LDG=2 PRMT=21 LDSM=32 UTMALDG=0
+  RANDOM lhs+const   : allclose=True max_abs=1.113e-01 max_rel_to_max=4.929e-06
+  lhsvar       cfg=128x128x128 w4 s3:    185.6 TFLOP/s (min 185.6 max 185.6)  exact=True  mma=f16  regs=222 spills=0
+  lhsvar       cfg=128x128x128 w8 s3:    185.0 TFLOP/s (min 185.0 max 185.0)  exact=True  mma=f16  regs=123 spills=0
+  lhsvar       cfg=128x256x128 w8 s3:    209.4 TFLOP/s (min 209.4 max 209.4)  exact=True  mma=f16  regs=230 spills=0
+  lhsvar       cfg=128x128x64 w4 s4:    363.5 TFLOP/s (min 363.5 max 363.6)  exact=True  mma=f16  regs=230 spills=0
+  BEST lhsvar      :    363.5 TFLOP/s cfg=(128, 128, 64, 4, 4) mma=f16
+  SASS lhsvar      : UTCHMMA=8 UTCQMMA=0 UTCOMMA=0 F2FP=128 STS=50 LDS=52 LDG=4 PRMT=68 LDSM=34 UTMALDG=0
+  RANDOM lhsvar      : allclose=True max_abs=1.895e-01 max_rel_to_max=9.222e-06
+  lhsvar+const cfg=128x128x128 w4 s3:   1075.3 TFLOP/s (min 1073.9 max 1075.7)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  lhsvar+const cfg=128x128x128 w8 s3:   1027.7 TFLOP/s (min 1027.1 max 1027.8)  exact=True  mma=mxf8f6f4  regs=124 spills=0
+  lhsvar+const cfg=128x256x128 w8 s3:   1213.4 TFLOP/s (min 1212.6 max 1213.9)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  lhsvar+const cfg=128x128x64 w4 s4:    723.2 TFLOP/s (min 723.0 max 723.3)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  BEST lhsvar+const:   1213.4 TFLOP/s cfg=(128, 256, 128, 8, 3) mma=mxf8f6f4
+  SASS lhsvar+const: UTCHMMA=0 UTCQMMA=4 UTCOMMA=0 F2FP=0 STS=36 LDS=16 LDG=2 PRMT=21 LDSM=32 UTMALDG=0
+  RANDOM lhsvar+const: allclose=True max_abs=1.064e-01 max_rel_to_max=5.171e-06
+  rhsvar       cfg=128x128x128 w4 s3:    478.8 TFLOP/s (min 478.6 max 478.8)  exact=True  mma=f16  regs=253 spills=0
+  rhsvar       cfg=128x128x128 w8 s3:    350.6 TFLOP/s (min 350.5 max 350.6)  exact=True  mma=f16  regs=150 spills=0
+  rhsvar       cfg=128x256x128 w8 s3:    440.5 TFLOP/s (min 440.4 max 440.6)  exact=True  mma=f16  regs=236 spills=0
+  rhsvar       cfg=128x128x64 w4 s4:    510.9 TFLOP/s (min 510.8 max 511.0)  exact=True  mma=f16  regs=202 spills=0
+  BEST rhsvar      :    510.9 TFLOP/s cfg=(128, 128, 64, 4, 4) mma=f16
+  SASS rhsvar      : UTCHMMA=4 UTCQMMA=0 UTCOMMA=0 F2FP=64 STS=11 LDS=55 LDG=2 PRMT=2 LDSM=0 UTMALDG=0
+  RANDOM rhsvar      : allclose=True max_abs=1.738e-01 max_rel_to_max=7.564e-06
+  rhsvar+const cfg=128x128x128 w4 s3:   1280.0 TFLOP/s (min 1280.0 max 1280.5)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  rhsvar+const cfg=128x128x128 w8 s3:   1169.1 TFLOP/s (min 1167.9 max 1169.9)  exact=True  mma=mxf8f6f4  regs=124 spills=0
+  rhsvar+const cfg=128x256x128 w8 s3:    825.4 TFLOP/s (min 824.9 max 825.6)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  rhsvar+const cfg=128x128x64 w4 s4:    841.7 TFLOP/s (min 841.5 max 842.3)  exact=True  mma=mxf8f6f4  regs=230 spills=0
+  BEST rhsvar+const:   1280.0 TFLOP/s cfg=(128, 128, 128, 4, 3) mma=mxf8f6f4
+  SASS rhsvar+const: UTCHMMA=0 UTCQMMA=4 UTCOMMA=0 F2FP=0 STS=34 LDS=14 LDG=4 PRMT=15 LDSM=32 UTMALDG=0
+  RANDOM rhsvar+const: allclose=True max_abs=1.113e-01 max_rel_to_max=4.860e-06
+  cuBLAS fp8 (_scaled_mm, per-tensor scale; reference only):   3032.9 TFLOP/s  exact=True
+
+SUMMARY
+EXIT 0 (all checks passed)
+DONE
